@@ -3,28 +3,30 @@
 export const mapService = {
     initMap,
     addMarker,
-    panTo
+    panTo,
+    getMap,
+    updateCurrLoc,
+    getCurrLoc
 }
 
-var gMap;
+var gMap
+var gCurrLoc
 
 function initMap(lat = 32.0749831, lng = 34.9120554) {
     console.log('InitMap');
     return _connectGoogleApi()
         .then(() => {
-            console.log('google available');
             gMap = new google.maps.Map(
                 document.querySelector('#map'), {
                 center: { lat, lng },
                 zoom: 15
             })
-            console.log('Map!', gMap);
         })
 }
 
-function addMarker(loc) {
+function addMarker() {
     var marker = new google.maps.Marker({
-        position: loc,
+        position: gCurrLoc,
         map: gMap,
         title: 'Hello World!'
     });
@@ -35,7 +37,6 @@ function panTo(lat, lng) {
     var laLatLng = new google.maps.LatLng(lat, lng);
     gMap.panTo(laLatLng);
 }
-
 
 
 function _connectGoogleApi() {
@@ -51,3 +52,18 @@ function _connectGoogleApi() {
         elGoogleApi.onerror = () => reject('Google script failed to load')
     })
 }
+
+
+function getMap() {
+    return gMap
+}
+
+function updateCurrLoc(loc){
+    gCurrLoc = loc
+    console.log(gCurrLoc)
+}
+
+function getCurrLoc(){
+    return gCurrLoc
+}
+

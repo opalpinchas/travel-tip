@@ -6,10 +6,12 @@ window.onAddMarker = onAddMarker;
 window.onPanTo = onPanTo;
 window.onGetLocs = onGetLocs;
 window.onGetUserPos = onGetUserPos;
+window.onSaveLoc = onSaveLoc
 
 function onInit() {
     mapService.initMap()
         .then(() => {
+            initMap()
             console.log('Map is ready');
         })
         .catch(() => console.log('Error: cannot init map'));
@@ -23,9 +25,8 @@ function getPosition() {
     })
 }
 
-function onAddMarker() {
-    console.log('Adding a marker');
-    mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 });
+function onAddMarker(l) {
+    mapService.addMarker();
 }
 
 function onGetLocs() {
@@ -51,3 +52,24 @@ function onPanTo() {
     console.log('Panning the Map');
     mapService.panTo(35.6895, 139.6917);
 }
+
+function initMap() {
+
+    const map = mapService.getMap()
+    map.addListener("click", (mapsMouseEvent) => {
+     let infoWindow = new google.maps.InfoWindow({
+        position: mapsMouseEvent.latLng,
+      })
+      infoWindow.setContent(
+        JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2)
+      )
+      infoWindow.open(map)
+      mapService.updateCurrLoc(mapsMouseEvent.latLng.toJSON())
+    })
+
+  }
+
+
+  function onSaveLoc(){
+      locService.saveLoc()
+  }
